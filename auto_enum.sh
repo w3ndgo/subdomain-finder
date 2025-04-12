@@ -119,7 +119,7 @@ function run_scans() {
       
       # Run tools in separate panes
       # Pane 0: anubis
-      tmux send-keys -t "$SESSION_NAME:0.0" "anubis -t \"$domain\" -o \"${project_name}/${domain}.anubis\" && touch /tmp/tool_anubis.done" C-m
+      tmux send-keys -t "$SESSION_NAME:0.0" "anubis -t \"$domain\" -s -o \"${project_name}/${domain}.anubis\" && touch /tmp/tool_anubis.done" C-m
       
       # Pane 1: chaos
       tmux send-keys -t "$SESSION_NAME:0.1" "chaos -d \"$domain\" -o \"${project_name}/${domain}.chaos\" && touch /tmp/tool_chaos.done" C-m
@@ -194,7 +194,7 @@ function run_scans() {
     
     echo "📦 Merging and deduplicating results for project: $project_name"
     # Collect and merge all outputs into one final file
-    cat ${project_name}/* | sort -u > "${project_name}/final.txt"
+    cat ${project_name}/* | tr -s '\n' | grep -v '^$' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | uniq > "${project_name}/final.txt"
     echo "✅ Final result saved to: ${project_name}/final.txt"
     
     # Show summary for all domains in the project
