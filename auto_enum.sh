@@ -119,7 +119,7 @@ function run_scans() {
       
       # Run tools in separate panes
       # Pane 0: anubis
-      tmux send-keys -t "$SESSION_NAME:0.0" "anubis -t \"$domain\" -s -o \"${project_name}/${domain}.anubis\" && touch /tmp/tool_anubis.done" C-m
+      tmux send-keys -t "$SESSION_NAME:0.0" "anubis -t \"$domain\" --silent -o \"${project_name}/${domain}.anubis\" && touch /tmp/tool_anubis.done" C-m
       
       # Pane 1: chaos
       tmux send-keys -t "$SESSION_NAME:0.1" "chaos -d \"$domain\" -o \"${project_name}/${domain}.chaos\" && touch /tmp/tool_chaos.done" C-m
@@ -212,15 +212,16 @@ function run_scans() {
     local subdominator_total=0
     
     for domain in $(cat "$scope_file"); do
-      anubis_total=$((anubis_total + $(wc -l < "${project_name}/${domain}.anubis" 2>/dev/null || echo 0)))
-      chaos_total=$((chaos_total + $(wc -l < "${project_name}/${domain}.chaos" 2>/dev/null || echo 0)))
-      subfinder_total=$((subfinder_total + $(wc -l < "${project_name}/${domain}.subfinder" 2>/dev/null || echo 0)))
-      abuseipdb_total=$((abuseipdb_total + $(wc -l < "${project_name}/${domain}.abuseipdb" 2>/dev/null || echo 0)))
-      subenum_total=$((subenum_total + $(wc -l < "${project_name}/${domain}.subenum" 2>/dev/null || echo 0)))
-      subdominator_total=$((subdominator_total + $(wc -l < "${project_name}/${domain}.subdominator" 2>/dev/null || echo 0)))
+      [ -f "${project_name}/${domain}.anubis" ] && anubis_total=$((anubis_total + $(wc -l < "${project_name}/${domain}.anubis")))
+      [ -f "${project_name}/${domain}.chaos" ] && chaos_total=$((chaos_total + $(wc -l < "${project_name}/${domain}.chaos")))
+      [ -f "${project_name}/${domain}.subfinder" ] && subfinder_total=$((subfinder_total + $(wc -l < "${project_name}/${domain}.subfinder")))
+      [ -f "${project_name}/${domain}.abuseipdb" ] && abuseipdb_total=$((abuseipdb_total + $(wc -l < "${project_name}/${domain}.abuseipdb")))
+      [ -f "${project_name}/${domain}.subenum" ] && subenum_total=$((subenum_total + $(wc -l < "${project_name}/${domain}.subenum")))
+      [ -f "${project_name}/${domain}.subdominator" ] && subdominator_total=$((subdominator_total + $(wc -l < "${project_name}/${domain}.subdominator")))
     done
     
-    local total_count=$(wc -l < "${project_name}/final.txt" 2>/dev/null || echo 0)
+    local total_count=0
+    [ -f "${project_name}/final.txt" ] && total_count=$(wc -l < "${project_name}/final.txt")
     
     printf "%-12s | %-8d\n" "Anubis" "$anubis_total"
     printf "%-12s | %-8d\n" "Chaos" "$chaos_total"
