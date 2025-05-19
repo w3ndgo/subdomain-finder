@@ -31,17 +31,7 @@ pip3 install anubis-netsec
 ```
 
 ### 4. SubEnum
-```bash
-git clone https://github.com/bing0o/SubEnum.git
-cd SubEnum
-chmod +x setup.sh
-./setup.sh
-```
-
-Then add this line to your `~/.zshrc` file:
-```bash
-alias subenum='bash $HOME/SubEnum/subenum.sh'
-```
+# این ابزار دیگر مورد نیاز نیست و از اسکریپت حذف شده است.
 
 ### 5. AbuseIPDB
 Add this line to your `~/.zshrc` file:
@@ -96,7 +86,6 @@ example/
   ├── example.com.chaos
   ├── example.com.subfinder
   ├── example.com.abuseipdb
-  ├── example.com.subenum
   ├── example.com.subdominator
   └── final.txt
 ```
@@ -104,4 +93,4 @@ example/
 5. **Progress Monitoring**:
    - The script shows real-time progress for each domain
    - Displays which tools have completed and which are still running
-   - Shows a summary of results for each project at the end 
+   - Shows a summary of results for each project at the end

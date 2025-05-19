@@ -61,25 +61,12 @@ print_status "Installing Anubis..."
 pip3 install anubis-netsec
 print_success "Anubis installed successfully"
 
-# Install SubEnum
-print_status "Installing SubEnum..."
-if [ -d "SubEnum" ]; then
-    print_status "SubEnum directory already exists. Updating..."
-    cd SubEnum
-    git pull
-else
-    git clone https://github.com/bing0o/SubEnum.git
-    cd SubEnum
-fi
-chmod +x setup.sh
-./setup.sh
-print_success "SubEnum installed successfully"
-cd ..
-
-# Add SubEnum alias to zshrc
-print_status "Adding SubEnum alias to zshrc..."
-echo 'alias subenum="bash $HOME/SubEnum/subenum.sh"' >> ~/.zshrc
-print_success "SubEnum alias added to zshrc"
+# SubEnum (این ابزار دیگر مورد نیاز نیست و از اسکریپت حذف شده است)
+# git clone https://github.com/bing0o/SubEnum.git
+# cd SubEnum
+# chmod +x setup.sh
+# ./setup.sh
+# echo "alias subenum='bash $HOME/SubEnum/subenum.sh'" >> ~/.zshrc
 
 # Add AbuseIPDB function to zshrc
 print_status "Adding AbuseIPDB function to zshrc..."
@@ -101,4 +88,4 @@ else
 fi
 
 print_success "All tools have been installed successfully!"
-print_status "Please restart your terminal or run 'source ~/.zshrc' to apply changes" 
+print_status "Please restart your terminal or run 'source ~/.zshrc' to apply changes"

@@ -38,12 +38,11 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   echo "  - Detects all *_scope files automatically"
   echo "  - For each domain in each file:"
   echo "      * Creates a directory with the project name (e.g. 'tiktok' for tiktok_scope)"
-  echo "      * Runs 6 tools in parallel:"
+  echo "      * Runs 5 tools in parallel:"
   echo "          - anubis"
   echo "          - chaos"
   echo "          - subfinder"
   echo "          - abuseipdb"
-  echo "          - subenum"
   echo "          - subdominator"
   echo "      * Saves outputs in the project directory"
   echo "  - After all scans, combines and deduplicates results into final.txt inside that directory"
@@ -103,14 +102,12 @@ function run_scans() {
       # Make sure we start with a single clean pane
       tmux kill-pane -a -t "$SESSION_NAME:0.0" 2>/dev/null || true
       
-      # Split tmux window into 6 panes with specific sizes
+      # Split tmux window into 5 panes with specific sizes
       tmux split-window -t "$SESSION_NAME:0" -h -p 50
       tmux split-window -t "$SESSION_NAME:0.0" -v -p 50
       tmux split-window -t "$SESSION_NAME:0.2" -v -p 50
       tmux select-pane -t "$SESSION_NAME:0.1"
       tmux split-window -t "$SESSION_NAME:0.1" -v -p 50
-      tmux select-pane -t "$SESSION_NAME:0.0"
-      tmux split-window -t "$SESSION_NAME:0.0" -v -p 50
 
       # No need for manual resize since we used percentages above
       
@@ -130,14 +127,11 @@ function run_scans() {
       # Pane 3: abuseipdb
       tmux send-keys -t "$SESSION_NAME:0.3" "abuseipdb \"$domain\" >> \"${project_name}/${domain}.abuseipdb\" && touch /tmp/tool_abuseipdb.done" C-m
       
-      # Pane 4: subenum
-      tmux send-keys -t "$SESSION_NAME:0.4" "subenum -d \"$domain\" -o \"${project_name}/${domain}.subenum\"; touch /tmp/tool_subenum.done" C-m
-      
-      # Pane 5: subdominator
-      tmux send-keys -t "$SESSION_NAME:0.5" "subdominator -d \"$domain\" -all -o \"${project_name}/${domain}.subdominator\" && touch /tmp/tool_subdominator.done" C-m
+      # Pane 4: subdominator
+      tmux send-keys -t "$SESSION_NAME:0.4" "subdominator -d \"$domain\" -all -o \"${project_name}/${domain}.subdominator\" && touch /tmp/tool_subdominator.done" C-m
       
       # Show progress in the main terminal
-      tools=("anubis" "chaos" "subfinder" "abuseipdb" "subenum" "subdominator")
+      tools=("anubis" "chaos" "subfinder" "abuseipdb" "subdominator")
       total=${#tools[@]}
       completed=0
       
@@ -186,7 +180,7 @@ function run_scans() {
       rm -f /tmp/tool_*.done
       
       # Kill all panes except the first one
-      for i in {1..5}; do
+      for i in {1..4}; do
         tmux kill-pane -t "$SESSION_NAME:0.$i" 2>/dev/null || true
       done
       
@@ -208,7 +202,6 @@ function run_scans() {
     local chaos_total=0
     local subfinder_total=0
     local abuseipdb_total=0
-    local subenum_total=0
     local subdominator_total=0
     
     for domain in $(cat "$scope_file"); do
@@ -216,7 +209,6 @@ function run_scans() {
       [ -f "${project_name}/${domain}.chaos" ] && chaos_total=$((chaos_total + $(wc -l < "${project_name}/${domain}.chaos")))
       [ -f "${project_name}/${domain}.subfinder" ] && subfinder_total=$((subfinder_total + $(wc -l < "${project_name}/${domain}.subfinder")))
       [ -f "${project_name}/${domain}.abuseipdb" ] && abuseipdb_total=$((abuseipdb_total + $(wc -l < "${project_name}/${domain}.abuseipdb")))
-      [ -f "${project_name}/${domain}.subenum" ] && subenum_total=$((subenum_total + $(wc -l < "${project_name}/${domain}.subenum")))
       [ -f "${project_name}/${domain}.subdominator" ] && subdominator_total=$((subdominator_total + $(wc -l < "${project_name}/${domain}.subdominator")))
     done
     
@@ -227,7 +219,6 @@ function run_scans() {
     printf "%-12s | %-8d\n" "Chaos" "$chaos_total"
     printf "%-12s | %-8d\n" "Subfinder" "$subfinder_total"
     printf "%-12s | %-8d\n" "AbuseIPDB" "$abuseipdb_total"
-    printf "%-12s | %-8d\n" "Subenum" "$subenum_total"
     printf "%-12s | %-8d\n" "Subdominator" "$subdominator_total"
     echo "----------------------------------------"
     printf "%-12s | %-8d\n" "Total Unique" "$total_count"
