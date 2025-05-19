@@ -30,10 +30,7 @@ sudo apt-get install python3-pip python-dev libssl-dev libffi-dev
 pip3 install anubis-netsec
 ```
 
-### 4. SubEnum
-# این ابزار دیگر مورد نیاز نیست و از اسکریپت حذف شده است.
-
-### 5. AbuseIPDB
+### 4. AbuseIPDB
 Add this line to your `~/.zshrc` file:
 ```bash
 abuseipdb(){
@@ -41,7 +38,7 @@ abuseipdb(){
 }
 ```
 
-### 6. Subdominator
+### 5. Subdominator
 ```bash
 pipx install git+https://github.com/RevoltSecurities/Subdominator
 ```
